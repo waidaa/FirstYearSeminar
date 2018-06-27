@@ -1,9 +1,9 @@
 import numpy as np
 
 class  atom:
-    def __init__(self, pos, mom, neighbours):
-        self.pos = pos #position
-        self.mom = mom #momentum
+    def __init__(self, position, momentum, neighbours):
+        self.pos = position
+        self.mom = momentum
         self.nei = neighbours
 
 def force(index, atoms):
