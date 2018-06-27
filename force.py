@@ -1,4 +1,3 @@
-from vpython import *
 import numpy as np
 
 #constants
@@ -9,6 +8,7 @@ dx = np.array([delta, 0, 0])
 dy = np.array([0, delta, 0])
 dz = np.array([0, 0, delta])
 
+
 class  atom:
     def __init__(self, pos, mom, neighbours):
         self.pos = pos #position
@@ -17,13 +17,13 @@ class  atom:
 
 def dis(x1, x2):
     d = x1 - x2
-    return np.linalg.norm(d) 
+    return np.linalg.norm(d)
 
 def ljpot(pos1, pos2):
-    dis = dis(pos1, pos2)
-    return (4 * eps) * (((sig**12)/(dis**12))-((sig**6)/(dis**6)))
+    dist = dis(pos1, pos2)
+    return (4 * eps) * (((sig**12)/(dist**12))-((sig**6)/(dist**6)))
 
-def force(index):
+def force(index, atoms):
     #constants
     neilist = atoms[index].nei
     pos_ = atoms[index].pos
@@ -51,10 +51,10 @@ def force(index):
         for i in neilist:
             potZ += ljpot(posZ, atoms[i].pos)
         return potZ
-    
+
     fx = (ljpotX(index) - ljpot_(index))/delta
     fy = (ljpotY(index) - ljpot_(index))/delta
     fz = (ljpotZ(index) - ljpot_(index))/delta
 
-    return np.array([fx,fy,fz])
+    return (-1)*np.array([fx,fy,fz])
 #kokomade
