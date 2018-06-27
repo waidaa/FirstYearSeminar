@@ -50,9 +50,9 @@ def force(index, atoms):
             potZ += ljpot(posZ, atoms[i].pos)
         return potZ
 
-    fx = (ljpotX(index) - ljpot_(index))/delta
-    fy = (ljpotY(index) - ljpot_(index))/delta
-    fz = (ljpotZ(index) - ljpot_(index))/delta
+    fx = (ljpotX(index) - ljpot_(index)) / delta
+    fy = (ljpotY(index) - ljpot_(index)) / delta
+    fz = (ljpotZ(index) - ljpot_(index)) / delta
 
-    return (-1)*np.array([fx,fy,fz])
+    return (-1) * np.array([fx,fy,fz])
 #kokomade
