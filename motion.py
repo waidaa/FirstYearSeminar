@@ -2,14 +2,15 @@ import numpy as np
 import math
 import random
 #import force
-m=0.1
-dt=0.1
+avogadro = 6.02 * 10e23
+m = 39.95 / avogadro
+dt = 0.1
 #とりあえず
 temp = 300
 
-box_length=box_height=box_depth=0.1
-cutoff_distance_square=(2.5*3.3*10e-10)*(2.5*3.3*10e-10)
-n=1000
+box_length = box_height = box_depth = 0.1
+cutoff_distance_square=(2.5 * 3.3 * 10e-10) * (2.5 * 3.3 * 10e-10)
+n = 1000
 class atom: #import forceをいれれば不要（？）（表記を自分のほうで統一させてもらいました）
     def __init__(self, position, momentum, neighbours):
         self.pos = position
