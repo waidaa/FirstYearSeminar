@@ -1,5 +1,5 @@
 import numpy as np
-from force import *
+from force2 import *
 #force2: map, zipWith, dis, force
 from random import uniform
 
