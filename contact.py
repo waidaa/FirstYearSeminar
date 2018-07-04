@@ -16,20 +16,19 @@ n = 1000
 def judge(x1, x2): #十分遠ければ2,無視できないくらい近ければ1,接触は0
     dist = dis(x1, x2)
     if dist <= 2 * radius:
-        return 2
+        return 0
     elif dist <= cut_dis:
         return 1
     else:
-        return 0
+        return 2
 
 def set_nei(index, atoms):
     pos = atoms[index].pos
     nei_list = []
     for i in range (n):
-        if ((i != index) and (contact(pos, atoms[i].pos) <= 1)):
-            nei_list.append(i)
-    atoms[index].nei = np.array(nei_list)
-    return 0
+        if ((i != index) and (judge(pos, atoms[i].pos) <= 1)):
+            nei_list += [i]
+    atoms[index].nei = nei_list
 
 def contact(index1, index2): #衝突後の挙動
     x1 = atoms[index1].pos
@@ -48,4 +47,3 @@ def contact(index1, index2): #衝突後の挙動
         impuls2 = map((lambda x : x * (-2) * conmum2), drvec)
         atoms[index1].mom = zipWith((lambda x, y : x + y), p1, impuls1)
         atoms[index2].mom = zipWith((lambda x, y : x + y), p2, impuls2)
-    return 0
