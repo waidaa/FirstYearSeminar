@@ -9,13 +9,13 @@ sig = 3.30 * 10e-10
 avogadro = 6.022 * 10e23
 at_w = 39.95
 m = at_w / avogadro
-dt = 0.0001
+dt = 0.001
 radius = 188 * 10e-12 #ファンデルワールス半径を採用
-box_length = 0.1
+box_length = 0.5
 cut_dis = 2.5 * sig #3.5では？
-n = 100
+n = 1
 temp = 300
-steps = 100000
+steps = 100
 
 class  atom:
     def __init__(self, position, momentum, neighbours):
@@ -118,14 +118,21 @@ def contact(index1, index2): #衝突後の挙動
         atoms[index2].mom = zipWith((lambda x, y : x + y), p2, impuls2)
 
 def contact_wall(index):
+    fc = np.array([0., 0., 0.])
     if max(atoms[index].pos)>box_length or min(atoms[index].pos)<0:
-        for i in range(0,2):
+        for i in range(3):
             if atoms[index].pos[i]>box_length:
                 atoms[index].pos[i]=2 * box_length-atoms[index].pos[i]
                 atoms[index].mom[i]=(atoms[index].mom[i])*(-1)
+                #return np.array(atoms[index].mom) #
+                #fcP[i] += 2 * abs(atoms[index].mom[i])
             elif atoms[index].pos[i]<0:
                 atoms[index].pos[i]=(atoms[index].pos[i])*(-1)
                 atoms[index].mom[i]=(atoms[index].mom[i])*(-1)
+                return np.array(atoms[index].mom) #
+                #fcM[i] += 2 * abs(atoms[index].mom[i])
+    else:
+        return np.array([0,0,0])
 
 def initialize():
     global atoms
@@ -145,15 +152,27 @@ def initialize():
 
 
 #ここからmain
-atoms = [atom([1,1,1],[1,1,1],[]) for i in range(n)]
+atoms = [atom([0,0,0],[0,0,0],[]) for i in range(n)]
+
 
 initialize()
 s = [sphere(radius = 0.1) for i in range(n)]
 for i in range(0,n):
     s[i].pos=vector(*(atoms[i].pos))
-
-for i1 in range(0,steps):
-    for i in range(0,n):
+rate(1)
+force_sum = np.array([0.,0.,0.])
+for i1 in range(steps):
+    for i in range(n):
+        contact_wall(i)
+        delta = contact_wall(i)
+        print(i1)
+        print(delta)
+        force_sum += delta
+        print(force_sum)
+        #force_sum += delta
+        for j in range(n):
+            if j!=i:
+                contact(i,j)
         set_nei(i)
         force_to_index=force(i)
         atoms[i].mom = np.ndarray.tolist(np.array(atoms[i].mom) + 0.5 * dt * np.array(force_to_index))
