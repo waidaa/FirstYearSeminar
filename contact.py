@@ -1,5 +1,5 @@
 import numpy as np
-from force2 import *
+from force import *
 #force2: map, zipWith, dis, force
 from random import uniform
 
@@ -29,6 +29,7 @@ def set_nei(index, atoms):
         if ((i != index) and (contact(pos, atoms[i].pos) <= 1)):
             nei_list.append(i)
     atoms[index].nei = np.array(nei_list)
+    return 0
 
 def contact(index1, index2): #衝突後の挙動
     x1 = atoms[index1].pos
@@ -47,4 +48,4 @@ def contact(index1, index2): #衝突後の挙動
         impuls2 = map((lambda x : x * (-2) * conmum2), drvec)
         atoms[index1].mom = zipWith((lambda x, y : x + y), p1, impuls1)
         atoms[index2].mom = zipWith((lambda x, y : x + y), p2, impuls2)
-   
+    return 0
