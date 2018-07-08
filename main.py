@@ -13,8 +13,8 @@ dt = 0.001
 radius = 188 * 10e-12 #ファンデルワールス半径を採用
 box_length = 0.5
 cut_dis = 2.5 * sig #3.5では？
-n = 1
-temp = 300
+n = 1000
+temp = 3000
 steps = 100
 
 class  atom:
@@ -112,8 +112,8 @@ def contact(index1, index2): #衝突後の挙動
         drvec = map((lambda x : x / dr), drvec_)
         conmom1 = np.dot(p1, drvec)
         conmom2 = np.dot(p2, drvec)
-        impuls1 = map((lambda x : x * (-2) * conmum1), drvec)
-        impuls2 = map((lambda x : x * (-2) * conmum2), drvec)
+        impuls1 = map((lambda x : x * (-2) * conmom1), drvec)
+        impuls2 = map((lambda x : x * (-2) * conmom2), drvec)
         atoms[index1].mom = zipWith((lambda x, y : x + y), p1, impuls1)
         atoms[index2].mom = zipWith((lambda x, y : x + y), p2, impuls2)
 
@@ -125,14 +125,15 @@ def contact_wall(index):
                 atoms[index].pos[i]=2 * box_length-atoms[index].pos[i]
                 atoms[index].mom[i]=(atoms[index].mom[i])*(-1)
                 #return np.array(atoms[index].mom) #
-                #fcP[i] += 2 * abs(atoms[index].mom[i])
+                fc[i] += 2 * abs(atoms[index].mom[i])
             elif atoms[index].pos[i]<0:
                 atoms[index].pos[i]=(atoms[index].pos[i])*(-1)
                 atoms[index].mom[i]=(atoms[index].mom[i])*(-1)
-                return np.array(atoms[index].mom) #
-                #fcM[i] += 2 * abs(atoms[index].mom[i])
-    else:
-        return np.array([0,0,0])
+                #return np.array(atoms[index].mom) #
+                fc[i] += 2 * abs(atoms[index].mom[i])
+    return fc
+    #else:
+        #return np.array([0,0,0])
 
 def initialize():
     global atoms
@@ -156,20 +157,19 @@ atoms = [atom([0,0,0],[0,0,0],[]) for i in range(n)]
 
 
 initialize()
-s = [sphere(radius = 0.1) for i in range(n)]
+s = [sphere(radius = 0.01) for i in range(n)]
 for i in range(0,n):
     s[i].pos=vector(*(atoms[i].pos))
-rate(1)
+rate(10)
 force_sum = np.array([0.,0.,0.])
 for i1 in range(steps):
     for i in range(n):
-        contact_wall(i)
+        #print(i)
+        #print(atoms[i].mom)
+        #contact_wall(i)
         delta = contact_wall(i)
-        print(i1)
-        print(delta)
+        #print(delta)
         force_sum += delta
-        print(force_sum)
-        #force_sum += delta
         for j in range(n):
             if j!=i:
                 contact(i,j)
@@ -183,3 +183,4 @@ for i1 in range(steps):
         force_to_index=force(i)
 #    atoms[index].mom=atoms[index].mom+0.5*dt*force_to_index
         atoms[i].mom = np.ndarray.tolist(np.array(atoms[i].mom) + 0.5 * dt * np.array(force_to_index))
+print(force_sum)
