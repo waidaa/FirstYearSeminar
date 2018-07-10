@@ -14,7 +14,7 @@ radius = 188 * 10e-12 #ファンデルワールス半径を採用
 box_length = 0.5
 cut_dis = 2.5 * sig #3.5では？
 n = 1000
-temp = 3000
+temp = 300
 steps = 100
 
 class  atom:
@@ -139,7 +139,7 @@ def initialize():
     global atoms
     v_square=3*1.38064852*10e-23*temp #divided_by_m
     for i in range(n):
-        vx_square=random.uniform(0,v_square)
+        vx_square=random.uniform(0,v_square) 
         vr_square=v_square-vx_square
         vy_square=random.uniform(0,vr_square)
         vr_square=v_square-vy_square
