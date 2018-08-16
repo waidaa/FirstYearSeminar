@@ -5,18 +5,18 @@ import random
 
 #constatnts
 eps = 0.997
-sig = 3.30 * 10e-10
-avogadro = 6.022 * 10e23
+sig = 3.30e-10
+avogadro = 6.022e23
 at_w = 39.95
 m = at_w / avogadro
-dt = 1/10000
-#radius = 188 * 10e-12 #ファンデルワールス半径を採用
+dt = 1/1000
+#radius = 188e-12 #ファンデルワールス半径を採用
 radius = 0.01
 box_length = 0.5
 #cut_dis = 2.5 * sig #3.5では？
 cut_dis = 3.5 * radius
 n = 1000
-temp = 100
+temp = 300
 steps = 100
 
 class  atom:
@@ -139,7 +139,7 @@ def contact_wall(index):
 
 def initialize():
     global atoms
-    v_square=6*1.38064852*10e-23*temp #divided_by_m #3or6
+    v_square=3*1.38064852e-23*temp #divided_by_m #3or6
     for i in range(n):
         vx_square=random.uniform(0,v_square) #0を-にした
         vr_square=v_square-vx_square
@@ -159,16 +159,19 @@ atoms = [atom([0,0,0],[0,0,0],[]) for i in range(n)]
 
 
 initialize()
-rod = cylinder(pos = vector(0,0,0), axis = vector(box_length, 0, 0), radius = radius / 2)
-rod.color = vector(0,1,0)
+#rod = cylinder(pos = vector(0,0,0), axis = vector(box_length, 0, 0), radius = radius / 2)
+#rod.color = vector(0,1,0)
+rods = [cylinder(pos = vector(0,0,0), axis = vector(box_length, 0, 0), radius = radius / 2), cylinder(pos = vector(0,0,0), axis = vector(0, box_length, 0), radius = radius / 2), cylinder(pos = vector(0,0,0), axis = vector(0, 0, box_length), radius = radius / 2), cylinder(pos = vector(box_length, box_length, 0), axis = vector(-box_length, 0, 0), radius = radius / 2), cylinder(pos = vector(box_length, box_length, 0), axis = vector(0, -box_length, 0), radius = radius / 2), cylinder(pos = vector(box_length, box_length, 0), axis = vector(0, 0, box_length), radius = radius / 2), cylinder(pos = vector(box_length, 0 , box_length), axis = vector(-box_length, 0, 0), radius = radius / 2), cylinder(pos = vector(box_length, 0, box_length), axis = vector(0, box_length, 0), radius = radius / 2), cylinder(pos = vector(box_length, 0, box_length), axis = vector(0, 0, -box_length), radius = radius / 2), cylinder(pos = vector(0, box_length, box_length), axis = vector(box_length, 0, 0), radius = radius / 2), cylinder(pos = vector(0, box_length, box_length), axis = vector(0, -box_length, 0), radius = radius / 2), cylinder(pos = vector(0, box_length, box_length), axis = vector(0, 0, -box_length), radius = radius / 2)]
+for i in range(12):
+    rods[i].color = vector(0,1,0)
 s = [sphere(radius = radius) for i in range(n)]
 for i in range(0,n):
     s[i].pos=vector(*(atoms[i].pos))
-#rate(10)
 force_sum = np.array([0.,0.,0.])
 for i1 in range(steps):
     move = cylinder(pos = vector(*atoms[0].pos), axis = vector(*(dt * np.array(atoms[0].mom) / m )), radius = radius/2)
     move.color = vector(1,0,0)
+    s[0].color = vector(1,0,0)
     for i in range(n):
         #print(i)
         #print(atoms[i].mom)
